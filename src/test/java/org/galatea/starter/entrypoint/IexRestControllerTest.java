@@ -84,6 +84,9 @@ public class IexRestControllerTest extends ASpringTest {
         .andReturn();
   }
 
+  /**
+   * Tests if the getHistoricalPrice function works as intended.
+   */
   @Test
   public void testGetHistoricalPrice() throws Exception {
 
@@ -99,6 +102,35 @@ public class IexRestControllerTest extends ASpringTest {
         .andExpect(jsonPath("$[0].open").value(new BigDecimal("256.9")))
         .andExpect(jsonPath("$[0].volume").value(new BigDecimal("28028546")))
         .andExpect(jsonPath("$[0].date", is("2021-01-19")))
+        .andReturn();
+  }
+
+  /**
+   * Tests to make sure the function returns an empty list if no parameters are specified.
+   */
+  @Test
+  public void testGetHistoricalPriceEmpty() throws Exception {
+    MvcResult result = this.mvc.perform(
+        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+            .get("/iex/historicalPrice")
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andReturn();
+  }
+
+  /**
+   * The only required variable for this function is the symbol.  This test makes sure that an empty
+   * list is returned if only the range and date are provided.
+   */
+  @Test
+  public void testGetHistoricalPriceNoSymbol() throws Exception {
+    MvcResult result = this.mvc.perform(
+        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+            .get("/iex/historicalPrice?range=ytd&date=20210217")
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", is(Collections.emptyList())))
         .andReturn();
   }
 }
