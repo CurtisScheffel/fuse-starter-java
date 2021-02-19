@@ -1,36 +1,36 @@
 # Global properties go here
 spring:
-   profiles:
-      active: test
-   main:
-      allow-bean-definition-overriding: true
-   datasource:
-      # this maps to an in-memory database that lives within a single VM.
-      # in case you want to use H2 with a file persistence or as a service
-      # reference http://www.h2database.com/html/cheatSheet.html and
-      # http://www.h2database.com/html/tutorial.html#using_server
-      url: jdbc:h2:mem:testtest
-      driver-class-name: org.h2.Driver
-   jpa:
-      hibernate:
-         ddl-auto: update
-      database-platform: org.hibernate.dialect.MySQL5Dialect
+  profiles:
+    active: test
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    # this maps to an in-memory database that lives within a single VM.
+    # in case you want to use H2 with a file persistence or as a service
+    # reference http://www.h2database.com/html/cheatSheet.html and
+    # http://www.h2database.com/html/tutorial.html#using_server
+    url: jdbc:h2:mem:testtest
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5Dialect
 
 mvc:
-   settleMissionPath: /settlementEngine
-   updateMissionPath: /settlementEngine/mission/
-   getMissionPath: /settlementEngine/mission/
-   getMissionsPath: /settlementEngine/missions
-   deleteMissionPath: /settlementEngine/mission/
-   iex:
-      getAllSymbolsPath: /iex/symbols
-      getLastTradedPricePath: /iex/lastTradedPrice
-      getHistoricalPricePath: /iex/historicalPrice
-   max-size-trace-payload: 50000
+  settleMissionPath: /settlementEngine
+  updateMissionPath: /settlementEngine/mission/
+  getMissionPath: /settlementEngine/mission/
+  getMissionsPath: /settlementEngine/missions
+  deleteMissionPath: /settlementEngine/mission/
+  iex:
+    getAllSymbolsPath: /iex/symbols
+    getLastTradedPricePath: /iex/lastTradedPrice
+    getHistoricalPricePath: /iex/historicalPrice
+  max-size-trace-payload: 50000
 jms:
-   listener-concurrency: 1-5
-   agreement-queue-json: sandbox.agreement
-   agreement-queue-proto: sandbox.agreement.proto
+  listener-concurrency: 1-5
+  agreement-queue-json: sandbox.agreement
+  agreement-queue-proto: sandbox.agreement.proto
 cache-config: ehcache.xml
 # Set debug level logging for the IEX Client so that Feign requests and responses are logged out
 log.level.org.galatea.starter.service.IEXClient: DEBUG
@@ -41,37 +41,37 @@ logging.level.org.springframework.boot.autoconfigure: INFO
 ---
 # Test properties go here
 spring:
-   profiles: test
-   datasource:
-      username: sa
-      password:
-   rest:
-      # this points at the local WireMock server in the test environment.
-      iexBasePath: http://localhost:${wiremock.server.port}/
-      iexHistoricalPath: https://cloud.iexapis.com/stable
-      iexApiToken: pk_fde37fe1b888413ab706e1aab237aebd
+  profiles: test
+  datasource:
+    username: sa
+    password:
+  rest:
+    # this points at the local WireMock server in the test environment.
+    iexBasePath: http://localhost:${wiremock.server.port}/
+    iexCloudPath: http://localhost:${wiremock.server.port}/
+    iexApiToken: sampleToken
 
 ---
 # Dev properties go here
 spring:
-   profiles: dev
-   datasource:
-      username: sa
-      password:
-   rest:
-      iexBasePath: https://api.iextrading.com/1.0
-      iexHistoricalPath: https://cloud.iexapis.com/stable
-      iexApiToken: pk_fde37fe1b888413ab706e1aab237aebd
+  profiles: dev
+  datasource:
+    username: sa
+    password:
+  rest:
+    iexBasePath: https://api.iextrading.com/1.0
+    iexCloudPath: https://cloud.iexapis.com/stable
+    iexApiToken: pk_fde37fe1b888413ab706e1aab237aebd
 # set debug to get spring to log the classpath (and other things) on startup
 debug: true
 
 ---
 # UAT properties go here
 spring:
-   profiles: uat
-   datasource:
-      username: sa
-      password:
+  profiles: uat
+  datasource:
+    username: sa
+    password:
 
 ---
 # Mappings for Rest Controllers

@@ -22,7 +22,7 @@ public class IexService {
   @NonNull
   private IexClient iexClient;
   @NonNull
-  private IexClientHistorical iexClientHistorical;
+  private IexClientCloud iexClientCloud;
 
 
   /**
@@ -51,39 +51,41 @@ public class IexService {
   /**
    * Get the historical price data for a symbol over a range of dates
    *
-   * @param symbol is the symbol to get the price data for.
-   * @param range is the range option.  See "https://iexcloud.io/docs/api/#historical-prices" for options.
-   * @param date is the date to get the data from.  YYYYMMDD format.
+   * @param symbol the symbol to get the price data for.
+   * @param range the range option.  See "https://iexcloud.io/docs/api/#historical-prices" for
+   *     options.
+   * @param date the date to get the data from.  YYYYMMDD format.
    * @return a list of historical price objects for the symbol passed in.
    */
   public List<IexHistoricalPrice> getHistoricalPrice(
       final String symbol,
       final String range,
       final String date) {
-    return iexClientHistorical.getHistoricalPrice(symbol,range,date);
+    return iexClientCloud.getHistoricalPrice(symbol, range, date);
   }
 
   /**
    * Get the historical price data for a symbol over a range of dates
    *
-   * @param symbol is the symbol to get the price data for.
-   * @param range is the range option.  See "https://iexcloud.io/docs/api/#historical-prices" for options.
+   * @param symbol the symbol to get the price data for.
+   * @param range the range option.  See "https://iexcloud.io/docs/api/#historical-prices" for
+   *     options.
    * @return a list of historical price objects for the symbol passed in.
    */
   public List<IexHistoricalPrice> getHistoricalPrice(
       final String symbol,
       final String range) {
-    return iexClientHistorical.getHistoricalPrice(symbol,range);
+    return iexClientCloud.getHistoricalPrice(symbol, range);
   }
 
   /**
    * Get the historical price data for a symbol over a range of dates
    *
-   * @param symbol is the symbol to get the price data for.
+   * @param symbol the symbol to get the price data for.
    * @return a list of historical price objects for the symbol passed in.
    */
   public List<IexHistoricalPrice> getHistoricalPrice(
       final String symbol) {
-    return iexClientHistorical.getHistoricalPrice(symbol);
+    return iexClientCloud.getHistoricalPrice(symbol);
   }
 }
