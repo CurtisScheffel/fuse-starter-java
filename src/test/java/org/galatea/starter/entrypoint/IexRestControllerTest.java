@@ -97,6 +97,8 @@ public class IexRestControllerTest extends ASpringTest {
         .andExpect(jsonPath("$[0].high").value(new BigDecimal("262.2")))
         .andExpect(jsonPath("$[0].low").value(new BigDecimal("252.7201")))
         .andExpect(jsonPath("$[0].open").value(new BigDecimal("256.9")))
+        .andExpect(jsonPath("$[0].volume").value(new BigDecimal("28028546")))
+        .andExpect(jsonPath("$[0].date", is("2021-01-19")))
         .andReturn();
   }
 }
