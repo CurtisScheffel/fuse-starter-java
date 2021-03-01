@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * A Feign Declarative REST Client to access endpoints from the Free and Open IEX API to get market
  * data. This client uses a different url to the other IexClient.
  */
-@FeignClient(name = "IEXHistorical", url = "${spring.rest.iexCloudPath}")
+@FeignClient(name = "IEXCloud", url = "${spring.rest.iexCloudPath}")
 public interface IexClientCloud {
 
   /**

@@ -61,7 +61,8 @@ public class IexService {
       final String symbol,
       final String range,
       final String date) {
-    log.info("Retrieving historical price data for symbol: " + symbol + ", range: " + range + ", date: " + date);
+    log.info("Retrieving historical price data for symbol: {}, range: {}, date: {}", symbol, range,
+        date);
     return iexClientCloud.getHistoricalPrice(symbol, range, date);
   }
 
@@ -76,7 +77,7 @@ public class IexService {
   public List<IexHistoricalPrice> getHistoricalPrice(
       final String symbol,
       final String range) {
-    log.info("Retrieving historical price data for Symbol: " + symbol + ", range: " + range);
+    log.info("Retrieving historical price data for Symbol: {}, range: {}", symbol, range);
     return iexClientCloud.getHistoricalPrice(symbol, range);
   }
 
@@ -88,7 +89,7 @@ public class IexService {
    */
   public List<IexHistoricalPrice> getHistoricalPrice(
       final String symbol) {
-    log.info("Retrieving historical price data for Symbol: " + symbol);
+    log.info("Retrieving historical price data for Symbol: {}", symbol);
     return iexClientCloud.getHistoricalPrice(symbol);
   }
 }
