@@ -77,7 +77,7 @@ public class RestExceptionHandler {
   @ExceptionHandler(FeignException.class)
   protected ResponseEntity<Object> handleFeignException(
       final FeignException exception) {
-    log.debug("Feign Exception Error Thrown",exception);
+    log.debug("Feign Exception Error Thrown", exception);
 
     ApiError error = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, exception.toString());
     return buildResponseEntity(error);

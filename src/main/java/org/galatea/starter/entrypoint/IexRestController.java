@@ -62,18 +62,19 @@ public class IexRestController {
   @GetMapping(value = "${mvc.iex.getHistoricalPricePath}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public List<IexHistoricalPrice> getHistoricalPrice(
-      @RequestParam(value = "symbol", required = false) final String symbol,
+      @RequestParam(value = "symbol", required = true) final String symbol,
       @RequestParam(value = "range", required = false) final String range,
       @RequestParam(value = "date", required = false) final String date) {
-    if (symbol == null) {
-      return Collections.emptyList();
-    } else if (date == null) {
+    if (date == null) {
       if (range == null) {
+        log.info("Running getHistoricalPrice with 1 parameter: symbol");
         return iexService.getHistoricalPrice(symbol);
       } else {
+        log.info("Running getHistoricalPrice with 2 parameters: symbol, range");
         return iexService.getHistoricalPrice(symbol, range);
       }
     } else {
+      log.info("Running getHistoricalPrice with 3 parameters: symbol, range, date");
       return iexService.getHistoricalPrice(symbol, range, date);
     }
   }

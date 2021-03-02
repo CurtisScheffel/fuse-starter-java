@@ -105,35 +105,23 @@ public class IexRestControllerTest extends ASpringTest {
         .andReturn();
   }
 
-  /**
-   * Tests to make sure the function returns an empty list if no parameters are specified.
-   */
-  @Test
-  public void testGetHistoricalPriceEmpty() throws Exception {
-    MvcResult result = this.mvc.perform(
-        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-            .get("/iex/historicalPrice")
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
-        .andReturn();
-  }
 
   /**
-   * The only required variable for this function is the symbol.  This test makes sure that an empty
-   * list is returned if only the range and date are provided.
+   * If no symbol is given, the program should return a 400 bad request error.
    */
   @Test
   public void testGetHistoricalPriceNoSymbol() throws Exception {
     MvcResult result = this.mvc.perform(
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-            .get("/iex/historicalPrice?range=ytd&date=20210217")
+            .get("/iex/historicalPrice")
             .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 
+  /**
+   * The program should throw a 500 server error in the case that the IexServer is down.
+   */
   @Test
   public void testGetHistoricalPriceServerFailure() throws Exception {
     MvcResult result = this.mvc.perform(
