@@ -1,5 +1,6 @@
 package org.galatea.starter.entrypoint;
 
+import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import net.sf.aspect4log.Log;
 import net.sf.aspect4log.Log.Level;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.galatea.starter.domain.IexHistoricalPrice;
 import org.galatea.starter.service.IexService;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -48,4 +50,32 @@ public class IexRestController {
     return iexService.getLastTradedPriceForSymbols(symbols);
   }
 
+  /**
+   * Get the historical price data for a symbol over a range of dates
+   *
+   * @param symbol the symbol to get the price data for.
+   * @param range the range option.  See "https://iexcloud.io/docs/api/#historical-prices" for
+   *     options.
+   * @param date the date to get the data from.  YYYYMMDD format.
+   * @return a historical price object for the symbol passed in.
+   */
+  @GetMapping(value = "${mvc.iex.getHistoricalPricePath}",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public List<IexHistoricalPrice> getHistoricalPrice(
+      @RequestParam(value = "symbol", required = true) final String symbol,
+      @RequestParam(value = "range", required = false) final String range,
+      @RequestParam(value = "date", required = false) final String date) {
+    if (date == null) {
+      if (range == null) {
+        log.info("Running getHistoricalPrice with 1 parameter: symbol");
+        return iexService.getHistoricalPrice(symbol);
+      } else {
+        log.info("Running getHistoricalPrice with 2 parameters: symbol, range");
+        return iexService.getHistoricalPrice(symbol, range);
+      }
+    } else {
+      log.info("Running getHistoricalPrice with 3 parameters: symbol, range, date");
+      return iexService.getHistoricalPrice(symbol, range, date);
+    }
+  }
 }
