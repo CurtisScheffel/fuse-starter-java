@@ -6,8 +6,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.domain.IexHistoricalPrice;
+import org.galatea.starter.domain.IexHistoricalPriceEntity;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.galatea.starter.domain.rpsy.IexHistoricalPriceEntityRspy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -23,6 +25,8 @@ public class IexService {
   private IexClient iexClient;
   @NonNull
   private IexClientCloud iexClientCloud;
+  @NonNull
+  private IexHistoricalPriceEntityRspy historicalPriceEntityRspy;
 
 
   /**
@@ -90,6 +94,13 @@ public class IexService {
   public List<IexHistoricalPrice> getHistoricalPrice(
       final String symbol) {
     log.info("Retrieving historical price data for Symbol: {}", symbol);
+    List<IexHistoricalPrice> historicalPrices = iexClientCloud.getHistoricalPrice(symbol);
+    List<IexHistoricalPriceEntity> historicalEntities =
+        IexHistoricalPriceEntity.createFromHistoricalPriceList(historicalPrices);
+    for (IexHistoricalPriceEntity entity : historicalEntities) {
+      historicalPriceEntityRspy.save(entity);
+      log.info(entity.toString());
+    }
     return iexClientCloud.getHistoricalPrice(symbol);
   }
 }
