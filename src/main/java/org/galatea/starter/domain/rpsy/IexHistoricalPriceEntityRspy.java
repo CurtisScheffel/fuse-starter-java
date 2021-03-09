@@ -7,8 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface IexHistoricalPriceEntityRspy
     extends CrudRepository<IexHistoricalPriceEntity, String> {
-//
-//  IexHistoricalPriceEntity findBySymbol_Date(String symbol_date);
-//
+
+    List<IexHistoricalPriceEntity> findBySymbol(String symbol);
+
 
 }

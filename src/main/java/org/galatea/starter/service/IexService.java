@@ -2,6 +2,7 @@ package org.galatea.starter.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,13 +95,32 @@ public class IexService {
   public List<IexHistoricalPrice> getHistoricalPrice(
       final String symbol) {
     log.info("Retrieving historical price data for Symbol: {}", symbol);
-    List<IexHistoricalPrice> historicalPrices = iexClientCloud.getHistoricalPrice(symbol);
-    List<IexHistoricalPriceEntity> historicalEntities =
-        IexHistoricalPriceEntity.createFromHistoricalPriceList(historicalPrices);
-    for (IexHistoricalPriceEntity entity : historicalEntities) {
-      historicalPriceEntityRspy.save(entity);
-      log.info(entity.toString());
+
+    // Declare Variables
+    List<IexHistoricalPrice> historicalPrices;
+    List<IexHistoricalPriceEntity> historicalEntities;
+    IexHistoricalPriceEntity tempEntity;
+
+    // Check database for symbols
+    historicalEntities = historicalPriceEntityRspy.findBySymbol(symbol.toUpperCase(Locale.ROOT));
+    log.info(historicalEntities.toString());
+    if (historicalEntities.isEmpty()) {
+      log.info("Retrieving data from Iex Website and saving to database");
+      historicalPrices = iexClientCloud.getHistoricalPrice(symbol);
+
+      // Create list of entity objects
+      historicalEntities =
+          IexHistoricalPriceEntity.createFromHistoricalPriceList(historicalPrices);
+
+      // Save entities in repo
+      for (IexHistoricalPriceEntity historicalPriceEntity : historicalEntities) {
+        historicalPriceEntityRspy.save(historicalPriceEntity);
+      }
+    } else {
+      log.info("Retrieving data from database");
+      historicalPrices =
+          IexHistoricalPrice.createFromHistoricalEntityList(historicalEntities);
     }
-    return iexClientCloud.getHistoricalPrice(symbol);
+    return (historicalPrices);
   }
 }

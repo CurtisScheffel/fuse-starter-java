@@ -1,6 +1,8 @@
 package org.galatea.starter.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,4 +21,23 @@ public class IexHistoricalPrice {
   private BigDecimal open;
   private BigDecimal volume;
   private String date;
+
+  public static List<IexHistoricalPrice> createFromHistoricalEntityList(
+      List<IexHistoricalPriceEntity> historicalEntities) {
+    List<IexHistoricalPrice> historicalPrices =
+        new ArrayList<>();
+
+    for (IexHistoricalPriceEntity entity : historicalEntities) {
+      historicalPrices
+          .add(new IexHistoricalPrice(
+              entity.getSymbol(),
+              entity.getClose(),
+              entity.getHigh(),
+              entity.getLow(),
+              entity.getOpen(),
+              entity.getVolume(),
+              entity.getDateString()));
+    }
+    return historicalPrices;
+  }
 }
