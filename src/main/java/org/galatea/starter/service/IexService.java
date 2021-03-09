@@ -99,7 +99,6 @@ public class IexService {
     // Declare Variables
     List<IexHistoricalPrice> historicalPrices;
     List<IexHistoricalPriceEntity> historicalEntities;
-    IexHistoricalPriceEntity tempEntity;
 
     // Check database for symbols
     historicalEntities = historicalPriceEntityRspy.findBySymbolIgnoreCase(symbol);
@@ -112,9 +111,7 @@ public class IexService {
           IexHistoricalPriceEntity.createFromHistoricalPriceList(historicalPrices);
 
       // Save entities in repo
-      for (IexHistoricalPriceEntity historicalPriceEntity : historicalEntities) {
-        historicalPriceEntityRspy.save(historicalPriceEntity);
-      }
+      historicalPriceEntityRspy.saveAll(historicalEntities);
     } else {
       log.info("Retrieving data from database");
       historicalPrices =
