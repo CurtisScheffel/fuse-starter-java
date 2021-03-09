@@ -102,8 +102,7 @@ public class IexService {
     IexHistoricalPriceEntity tempEntity;
 
     // Check database for symbols
-    historicalEntities = historicalPriceEntityRspy.findBySymbol(symbol.toUpperCase(Locale.ROOT));
-    log.info(historicalEntities.toString());
+    historicalEntities = historicalPriceEntityRspy.findBySymbolIgnoreCase(symbol);
     if (historicalEntities.isEmpty()) {
       log.info("Retrieving data from Iex Website and saving to database");
       historicalPrices = iexClientCloud.getHistoricalPrice(symbol);
