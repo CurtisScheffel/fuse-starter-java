@@ -2,18 +2,12 @@ package org.galatea.starter.service;
 
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice.Local;
 import org.galatea.starter.domain.IexHistoricalPrice;
 import org.galatea.starter.domain.IexHistoricalPriceEntity;
 import org.galatea.starter.domain.IexLastTradedPrice;
@@ -21,7 +15,6 @@ import org.galatea.starter.domain.IexSymbol;
 import org.galatea.starter.domain.rpsy.IexHistoricalPriceEntityRspy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * A layer for transformation, aggregation, and business required when retrieving data from IEX.
