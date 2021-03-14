@@ -22,7 +22,7 @@ public interface IexClientCloud {
    *     30 days from today)
    * @return an IexHistoricalPrice object corresponding to the requested data.
    */
-  @GetMapping("/stock/{symbol}/chart/{range}/{date}?token=${spring.rest.iexApiToken}")
+  @GetMapping("/stock/{symbol}/chart/{range}/{date}?chartByDay=true&token=${spring.rest.iexApiToken}")
   List<IexHistoricalPrice> getHistoricalPrice(
       @PathVariable(value = "symbol") String symbol,
       @PathVariable(value = "range") String range,

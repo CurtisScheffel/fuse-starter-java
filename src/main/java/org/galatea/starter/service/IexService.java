@@ -1,13 +1,18 @@
 package org.galatea.starter.service;
 
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.domain.IexHistoricalPrice;
+import org.galatea.starter.domain.IexHistoricalPriceEntity;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.galatea.starter.domain.rpsy.IexHistoricalPriceEntityRspy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -23,6 +28,8 @@ public class IexService {
   private IexClient iexClient;
   @NonNull
   private IexClientCloud iexClientCloud;
+  @NonNull
+  private IexHistoricalPriceEntityRspy historicalPriceEntityRspy;
 
 
   /**
@@ -63,7 +70,25 @@ public class IexService {
       final String date) {
     log.info("Retrieving historical price data for symbol: {}, range: {}, date: {}", symbol, range,
         date);
-    return iexClientCloud.getHistoricalPrice(symbol, range, date);
+
+    // Declare Variables
+    List<IexHistoricalPrice> historicalPrices;
+    List<IexHistoricalPriceEntity> historicalEntities;
+    LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+    // Check if date is in database
+    historicalEntities = historicalPriceEntityRspy.findBySymbolIgnoreCaseAndDate(symbol, localDate);
+    if (historicalEntities.isEmpty()) {
+      log.info("Retrieving data from Iex website and saving to database.");
+      historicalPrices = iexClientCloud.getHistoricalPrice(symbol, range, date);
+      historicalEntities = IexHistoricalPriceEntity.createFromHistoricalPriceList(historicalPrices);
+      historicalPriceEntityRspy.saveAll(historicalEntities);
+    } else {
+      log.info("Retrieving data from database");
+      historicalPrices = IexHistoricalPrice.createFromHistoricalEntityList(historicalEntities);
+    }
+
+    return historicalPrices;
   }
 
   /**
@@ -78,7 +103,78 @@ public class IexService {
       final String symbol,
       final String range) {
     log.info("Retrieving historical price data for Symbol: {}, range: {}", symbol, range);
-    return iexClientCloud.getHistoricalPrice(symbol, range);
+
+    // Declare Variables
+    List<IexHistoricalPrice> historicalPrices;
+    List<IexHistoricalPriceEntity> historicalEntities;
+    LocalDate end = LocalDate.now();
+    LocalDate start;
+
+    // Determine Range Boundaries
+    switch (range.toUpperCase()) {
+      case "MAX":
+        start = end.minusYears(15);
+        log.info(start.toString());
+        break;
+      case "5Y":
+        start = end.minusYears(5);
+        log.info(start.toString());
+        break;
+      case "2Y":
+        start = end.minusYears(2);
+        log.info(start.toString());
+        break;
+      case "1Y":
+        start = end.minusYears(1);
+        log.info(start.toString());
+        break;
+      case "YTD":
+        start = end.withDayOfYear(1);
+        log.info(start.toString());
+        break;
+      case "6M":
+        start = end.minusMonths(6);
+        log.info(start.toString());
+        break;
+      case "3M":
+        start = end.minusMonths(3);
+        log.info(start.toString());
+        break;
+      case "1M":
+        start = end.minusMonths(1);
+        log.info(start.toString());
+        break;
+      case "5D":
+        start = end.minusDays(5);
+        log.info(start.toString());
+        break;
+      default:
+        start = end;
+        log.info("Range entry does not match possible values.");
+    }
+
+    // Check database for symbols
+    /*
+      I need a more accurate way to test if the database has the symbols rather than isEmpty().
+      If I get a specific date and then try to run this method, if that date was within the last
+       30 days, it'll just return that.  How can I do this?
+     */
+    historicalEntities = historicalPriceEntityRspy.findBySymbolIgnoreCaseAndDateBetween(symbol, start, end);
+    if (historicalEntities.isEmpty()) {
+      log.info("Retrieving data from Iex Website and saving to database");
+      historicalPrices = iexClientCloud.getHistoricalPrice(symbol,range);
+
+      // Create list of entity objects
+      historicalEntities = IexHistoricalPriceEntity.createFromHistoricalPriceList(historicalPrices);
+
+      // Save entities in repo
+      historicalPriceEntityRspy.saveAll(historicalEntities);
+    } else {
+      log.info("Retrieving data from database");
+      historicalPrices = IexHistoricalPrice.createFromHistoricalEntityList(historicalEntities);
+    }
+
+    return historicalPrices;
   }
 
   /**
@@ -90,6 +186,32 @@ public class IexService {
   public List<IexHistoricalPrice> getHistoricalPrice(
       final String symbol) {
     log.info("Retrieving historical price data for Symbol: {}", symbol);
-    return iexClientCloud.getHistoricalPrice(symbol);
+
+    // Declare Variables
+    List<IexHistoricalPrice> historicalPrices;
+    List<IexHistoricalPriceEntity> historicalEntities;
+
+    // Check database for symbols
+    /*
+      I need a more accurate way to test if the database has the symbols rather than isEmpty().
+      If I get a specific date and then try to run this method, if that date was within the last
+       30 days, it'll just return that.  How can I do this?
+     */
+    historicalEntities = historicalPriceEntityRspy.findBySymbolIgnoreCase(symbol);
+    if (historicalEntities.isEmpty()) {
+      log.info("Retrieving data from Iex Website and saving to database");
+      historicalPrices = iexClientCloud.getHistoricalPrice(symbol);
+
+      // Create list of entity objects
+      historicalEntities = IexHistoricalPriceEntity.createFromHistoricalPriceList(historicalPrices);
+
+      // Save entities in repo
+      historicalPriceEntityRspy.saveAll(historicalEntities);
+    } else {
+      log.info("Retrieving data from database");
+      historicalPrices = IexHistoricalPrice.createFromHistoricalEntityList(historicalEntities);
+    }
+
+    return (historicalPrices);
   }
 }
